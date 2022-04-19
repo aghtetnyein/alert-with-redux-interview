@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // mui components
 import {
@@ -27,23 +27,30 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 export default function AlertExampleForm({ createNewAlert }) {
   // instances
   const dispatch = useDispatch();
+  const alertList = useSelector((state) => state.alertList.items);
   // states
   const [alertType, setAlertType] = React.useState("success");
 
   const validationSchema = Yup.object().shape({
-    // alertId: Yup.number("ID must be a number").typeError("ID must be a number"),
-    // alertTitle: Yup.string("Title must be a string").required(
-    //   "Alert Title is required"
-    // ),
-    // text: Yup.string("Text must be a string").required("Text is required"),
-    // timeLimit: Yup.number("Time Limit must be a number").typeError(
-    //   "Time Limit must be a number"
-    // ),
-    // link: Yup.string("Link must be a string"),
+    alertId: Yup.number("ID must be a number")
+      .min(0)
+      .positive()
+      .nullable(true)
+      .transform((val) => (Number(val) ? val : null)),
+    alertTitle: Yup.string("Title must be a string").required(
+      "Alert Title is required"
+    ),
+    text: Yup.string("Text must be a string").required("Text is required"),
+    timeLimit: Yup.number("Time Limit must be a number")
+      .min(0)
+      .nullable(true)
+      .transform((_, val) => (val === Number(val) ? val : null)),
+    link: Yup.string("Link must be a string"),
   });
 
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -53,12 +60,28 @@ export default function AlertExampleForm({ createNewAlert }) {
   const onSubmit = (data) => {
     const newAlert = { ...data, alertType };
 
-    dispatch({
-      type: "ADD_TO_ALERT_LIST",
-      payloads: {
-        newAlert: newAlert,
-      },
-    });
+    var already_exist_numbers = alertList.map((item) => item.alertId);
+    console.log(already_exist_numbers);
+    if (already_exist_numbers.includes(newAlert.alertId)) {
+      console.log("hello");
+      [
+        {
+          type: "manual",
+          name: "alertId",
+          message: "AlertId already exists",
+        },
+      ].forEach(({ name, type, message }) =>
+        setError(name, { type, message }, { shouldFocus: true })
+      );
+    } else {
+      console.log(newAlert);
+      dispatch({
+        type: "ADD_TO_ALERT_LIST",
+        payloads: {
+          newAlert: newAlert,
+        },
+      });
+    }
   };
 
   return (
@@ -154,6 +177,7 @@ export default function AlertExampleForm({ createNewAlert }) {
 
             <Grid item xs={12}>
               <TextField
+                required
                 name="text"
                 variant="filled"
                 fullWidth

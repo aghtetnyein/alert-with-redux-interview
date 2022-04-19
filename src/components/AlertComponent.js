@@ -39,7 +39,7 @@ const AlertComponent = ({ alertId, type, title, body, timeLimit, link }) => {
   };
 
   return (
-    <Link href={link} replace={true}>
+    <Link href={link} underline={"none"}>
       <Alert
         variant="filled"
         severity={type}
