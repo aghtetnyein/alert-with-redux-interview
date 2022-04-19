@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
-function App() {
+// mui components
+import { Container, Box } from "@mui/material";
+
+// components
+import AlertExampleForm from "./components/AlertExampleForm";
+import AlertManager from "./components/AlertManager";
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container
+      component="main"
+      maxWidth="sm"
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <AlertExampleForm />
+      <Box sx={{ my: 2, position: "absolute", top: 2, right: 16 }}>
+        <AlertManager />
+      </Box>
+    </Container>
   );
-}
+};
 
 export default App;
