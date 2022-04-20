@@ -139,7 +139,6 @@ export default function AlertExampleForm() {
 
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 variant="filled"
                 id="text"
