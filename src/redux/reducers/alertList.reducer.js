@@ -23,7 +23,7 @@ const alertReducer = (
       const newItem = {
         alertId: payloads.newAlert.alertId || new_num,
         alertType: payloads.newAlert.alertType,
-        alertTitle: payloads.newAlert.alertTitle,
+        alertTitle: payloads.newAlert.alertTitle || payloads.newAlert.alertType,
         text: payloads.newAlert.text,
         timeLimit: payloads.newAlert.timeLimit || 3000,
         link: payloads.newAlert.link,

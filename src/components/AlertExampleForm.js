@@ -1,7 +1,4 @@
 import * as React from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,57 +21,33 @@ import {
 // icons
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 
-export default function AlertExampleForm({ createNewAlert }) {
+export default function AlertExampleForm() {
   // instances
   const dispatch = useDispatch();
   const alertList = useSelector((state) => state.alertList.items);
+
   // states
   const [alertType, setAlertType] = React.useState("success");
 
-  const validationSchema = Yup.object().shape({
-    alertId: Yup.number("ID must be a number")
-      .min(0)
-      .positive()
-      .nullable(true)
-      .transform((val) => (Number(val) ? val : null)),
-    alertTitle: Yup.string("Title must be a string").required(
-      "Alert Title is required"
-    ),
-    text: Yup.string("Text must be a string").required("Text is required"),
-    timeLimit: Yup.number("Time Limit must be a number")
-      .min(0)
-      .nullable(true)
-      .transform((_, val) => (val === Number(val) ? val : null)),
-    link: Yup.string("Link must be a string"),
-  });
+  // functions
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
 
-  const {
-    register,
-    setError,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-
-  const onSubmit = (data) => {
-    const newAlert = { ...data, alertType };
+    const newAlert = {
+      alertId: data.get("alertId"),
+      alertType: alertType,
+      alertTitle: data.get("alertTitle"),
+      text: data.get("text"),
+      timeLimit: data.get("timeLimit"),
+      link: data.get("link"),
+    };
 
     var already_exist_numbers = alertList.map((item) => item.alertId);
-    console.log(already_exist_numbers);
+
     if (already_exist_numbers.includes(newAlert.alertId)) {
-      console.log("hello");
-      [
-        {
-          type: "manual",
-          name: "alertId",
-          message: "AlertId already exists",
-        },
-      ].forEach(({ name, type, message }) =>
-        setError(name, { type, message }, { shouldFocus: true })
-      );
+      alert("The Alert ID already exists");
     } else {
-      console.log(newAlert);
       dispatch({
         type: "ADD_TO_ALERT_LIST",
         payloads: {
@@ -103,23 +76,23 @@ export default function AlertExampleForm({ createNewAlert }) {
           .ALERTS.
         </Typography>
 
-        <Box sx={{ mt: 3, width: "100%" }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ mt: 3, width: "100%" }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
+                autoFocus
+                type={"number"}
                 variant="filled"
                 id="alertId"
                 name="alertId"
                 label="ID"
-                type={"number"}
-                {...register("alertId")}
-                error={errors.alertId ? true : false}
-                autoFocus
               />
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {errors.alertId?.message}
-              </Typography>
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -145,75 +118,54 @@ export default function AlertExampleForm({ createNewAlert }) {
 
             <Grid item xs={12} sm={6}>
               <TextField
-                required
-                name="alertTitle"
-                variant="filled"
                 fullWidth
+                variant="filled"
                 id="alertTitle"
+                name="alertTitle"
                 label="Title"
-                {...register("alertTitle")}
-                error={errors.alertTitle ? true : false}
               />
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {errors.alertTitle?.message}
-              </Typography>
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
-                name="timeLimit"
-                variant="filled"
                 fullWidth
-                id="timeLimit"
-                label="Time Limit (in seconds)"
                 type={"number"}
-                {...register("timeLimit")}
-                error={errors.timeLimit ? true : false}
+                variant="filled"
+                id="timeLimit"
+                name="timeLimit"
+                label="Time Limit (in seconds)"
               />
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {errors.timeLimit?.message}
-              </Typography>
             </Grid>
 
             <Grid item xs={12}>
               <TextField
                 required
-                name="text"
-                variant="filled"
                 fullWidth
+                variant="filled"
                 id="text"
+                name="text"
                 label="Text"
                 multiline
                 rows={3}
-                {...register("text")}
-                error={errors.text ? true : false}
               />
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {errors.text?.message}
-              </Typography>
             </Grid>
 
             <Grid item xs={12}>
               <TextField
-                name="link"
-                variant="filled"
                 fullWidth
+                variant="filled"
                 id="link"
+                name="link"
                 label="Link"
-                {...register("link")}
-                error={errors.link ? true : false}
               />
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {errors.link?.message}
-              </Typography>
             </Grid>
           </Grid>
           <Button
             fullWidth
+            type={"submit"}
             variant="contained"
             size="large"
             sx={{ mt: 3, mb: 2 }}
-            onClick={handleSubmit(onSubmit)}
           >
             <Typography variant="body2" sx={{ fontWeight: 500 }}>
               Create new alert

@@ -28,8 +28,8 @@ const AlertComponent = ({ alertId, type, title, body, timeLimit, link }) => {
   }, []);
 
   // functions
-  const closeAlert = () => {
-    // console.log(currentAlertId);
+  const closeAlert = (event) => {
+    event.preventDefault();
     dispatch({
       type: "REMOVE_FROM_ALERT_LIST",
       payloads: {
@@ -39,7 +39,7 @@ const AlertComponent = ({ alertId, type, title, body, timeLimit, link }) => {
   };
 
   return (
-    <Link href={link} underline={"none"}>
+    <Link href={link} underline={"none"} target="_blank">
       <Alert
         variant="filled"
         severity={type}
@@ -55,7 +55,7 @@ const AlertComponent = ({ alertId, type, title, body, timeLimit, link }) => {
         }
         sx={{ mb: 1 }}
       >
-        <AlertTitle>{title}</AlertTitle>
+        <AlertTitle sx={{ textTransform: "capitalize" }}>{title}</AlertTitle>
         {body}
       </Alert>
     </Link>
