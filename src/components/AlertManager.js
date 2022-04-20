@@ -8,6 +8,7 @@ import AlertComponent from "./AlertComponent";
 
 const AlertManager = () => {
   // instance
+  // get all the active alerts from the redux state
   const alertList = useSelector((state) => state.alertList.items);
 
   return (

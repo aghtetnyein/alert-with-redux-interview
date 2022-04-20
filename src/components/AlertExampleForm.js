@@ -30,6 +30,7 @@ export default function AlertExampleForm() {
   const [alertType, setAlertType] = React.useState("success");
 
   // functions
+  // get value from the form and call dispatch
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -39,12 +40,14 @@ export default function AlertExampleForm() {
       alertType: alertType,
       alertTitle: data.get("alertTitle"),
       text: data.get("text"),
-      timeLimit: data.get("timeLimit"),
+      timeLimit: parseFloat(data.get("timeLimit")) * 1000,
       link: data.get("link"),
     };
 
+    // check there is no duplicate alertId
     var already_exist_numbers = alertList.map((item) => item.alertId);
 
+    // if alertId is already existed, windows will alert to fill another alertID if not call the dispatch function
     if (already_exist_numbers.includes(newAlert.alertId)) {
       alert("The Alert ID already exists");
     } else {

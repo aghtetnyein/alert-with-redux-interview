@@ -11,6 +11,7 @@ const AlertComponent = ({ alertId, type, title, body, timeLimit, link }) => {
   // instances
   const dispatch = useDispatch();
 
+  // to remove the alert from the state after timeLimit
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch({
@@ -28,6 +29,7 @@ const AlertComponent = ({ alertId, type, title, body, timeLimit, link }) => {
   }, []);
 
   // functions
+  // remove the alert from the state with action
   const closeAlert = (event) => {
     event.preventDefault();
     dispatch({
